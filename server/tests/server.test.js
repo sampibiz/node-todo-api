@@ -92,3 +92,41 @@ describe( 'Get/ todos/:id', () => {
     });
 
 });
+
+describe( 'DELETE/ todos/:id', () => {
+    it( 'should delete todo doc', ( done ) => {
+        var hexID = todos[0]['_id'].toHexString();
+        request( app )
+            .delete( `/todos/${hexID}`)
+            .expect( 200 )
+            .expect( ( res ) => {
+                expect( res.body.todo._id ).toBe( hexID );
+            })
+                .end( ( err, res ) => {
+                    if( err ) {
+                        return err;
+                    }
+                    // verify that the todo doc was deleted
+                    Todo.findById( hexID ).then( ( todo ) => {
+                        expect( todo ).toNotExist();
+                        done();
+                    }).catch( (e) => done( e ) );
+                });
+    });
+
+    it( 'should return 404 if todo not found', ( done ) => {
+        var hexId = new ObjectID().toHexString();
+        request( app )
+            .get( `/todos/${hexId}`)
+            .expect( 404 )
+            .end( done );
+    });
+
+    it( 'should return 404 if not object-id', ( done ) => {
+        // get back 404
+        request( app )
+            .get( `/todos/123abc`)
+            .expect( 404 )
+            .end( done );
+    });
+});
