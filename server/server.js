@@ -55,6 +55,24 @@ app.get( '/todos/:id', ( req, res ) => {
     });
 });
 
+
+app.delete( '/todos/:id', ( req, res ) => {
+    var id = req.params.id;
+    if( !ObjectID.isValid( id ) ){
+        res.status( 404 ).send( );
+    }
+
+    Todo.findByIdAndRemove( '5b72aa2beaef28222418a02e' ).then( ( todo ) => {
+        if( !todo ){
+            return res.status( 404 ).send( );
+        }
+        res.status( 200 ).send( { todo } );
+    }).catch( (e) => {
+
+    });
+});
+
+
 /*app.post( 'todos', ( reg, res ) => {
 
 });
