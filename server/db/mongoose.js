@@ -1,6 +1,7 @@
 var mongoose = require( 'mongoose' );
 
 mongoose.Promise = global.Promise;
-mongoose.connect( 'mongodb://localhost:27017/TodoApp' );
+const URI = process.env.MONGODB_URI | 'mongodb://localhost:27017/TodoApp';
+mongoose.connect( URI );
 
 module.export = { mongoose };
