@@ -1,3 +1,4 @@
+require( './config/config' );
 const _ = require( 'lodash' );
 const express = require( 'express' );
 const bodyParser = require( 'body-parser' );
@@ -100,31 +101,8 @@ app.patch( '/todos/:id', ( req, res ) => {
     }) ;
 });
 
-/* app.post( 'todos', ( reg, res ) => {
-
-});*/
-
 app.listen( port, () => {
     console.log( `Started at port ${port}` );
 });
 
 module.exports = {app};
-
-
-/*
-const {ObjectID} = require( 'mongodb' );
-
-var id = '5b72aa2beaef28222418a02c';
-if( !ObjectID.isValid( id ) ){
-    console.log( 'Id not valid' );
-}
-
-Todo.findById( id ).then( ( todo ) => {
-    if( !todo ){
-        return console.log( 'Id not found' );
-    }
-    console.log( todo );
-}).catch( (e) => {
-    console.log( e );
-});
- */
