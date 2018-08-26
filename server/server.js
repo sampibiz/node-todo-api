@@ -7,6 +7,7 @@ const {ObjectID} = require( 'mongodb' );
 var {mongoose} = require( './db/mongoose.js' );
 var {Todo} = require( './models/todo.js' );
 var {User} = require( './models/user.js' );
+var {authenticate} = require( './middleware/authenticate' );
 
 const port = process.env.PORT || 3000;
 
@@ -14,6 +15,8 @@ var app = express();
 
 app.use( bodyParser.json() );
 
+
+/* TODOS routes */
 app.post( '/todos', ( req, res ) => {
     console.log( req.body );
     // create a new Todo instance
@@ -100,9 +103,36 @@ app.patch( '/todos/:id', ( req, res ) => {
         res.status( 400 ).send( );
     }) ;
 });
+/* END TODOS routes */
+
+
+/* USERS routes */
+
+app.get( '/users/test', authenticate, ( req, res ) => {
+    console.log( req.user ); // -> undefined
+    res.send(  req.token );
+});
+
+
+app.post( '/users', ( req, res ) => {
+    console.log( req.body );
+    let userData = _.pick( req.body, [ 'email', 'password' ]);
+    // create a new User instance
+    let user = new User( userData );
+    user.save().then( ( ) => {
+       return user.generateAuthToken();
+    }).then( (token) => {
+        res.header( 'x-auth', token  ).send( user );
+    }).catch( ( err ) => {
+        // send err msg to the client
+        res.status( 400 ).send( err );
+    });
+});
+
 
 app.listen( port, () => {
     console.log( `Started at port ${port}` );
 });
 
 module.exports = {app};
+
